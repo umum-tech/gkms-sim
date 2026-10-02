@@ -76,7 +76,7 @@ export function ScheduleStep({ st, update, r, goFinal }: { st: SimState; update:
         control: (
           <div className="ctl"><div className="ctl-line"><span className="ctl-k">追加上昇</span>
             <Segmented value={st.exams[k] as (typeof PARAM_OPTS)[number]} options={PARAM_OPTS} labels={PARAM_LABELS} colored size="sm" onChange={(v) => update((x) => { x.exams[k] = v; })} />
-          </div><span className="ctl-note">全パラメータ +{EXAM[k][1]}、選んだパラメータにさらに +{EXAM[k][2]}（パラボ込み）</span></div>
+          </div><span className="ctl-note">全パラメータ +{EXAM[k][1]}、選んだパラメータにさらに +{EXAM[k][2]}（パラメータボーナス込み）</span></div>
         ),
       };
     }

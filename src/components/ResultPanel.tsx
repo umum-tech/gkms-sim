@@ -4,7 +4,7 @@ import { Assume, fmt } from "./ui";
 
 const SEGMENTS = [
   { key: "start", label: "開始時" },
-  { key: "card", label: "サポカ" },
+  { key: "card", label: "サポートカード" },
   { key: "lesson", label: "レッスン" },
   { key: "cls", label: "授業" },
   { key: "exam", label: "試験" },
@@ -49,13 +49,13 @@ export function ResultPanel({ r }: { r: Result }) {
         <thead><tr><th></th>{PARAMS.map((p) => <th key={p} className={`h-${p.toLowerCase()}`}>{p}</th>)}</tr></thead>
         <tbody>
           <tr><th>開始時</th>{r.start.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
-          <tr><th>サポカ</th>{r.cardGain.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
+          <tr><th>サポートカード</th>{r.cardGain.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
           <tr><th>レッスン</th>{r.totals.lesson.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
           <tr><th>授業</th>{r.totals.cls.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
           <tr><th>試験</th>{r.totals.exam.map((x, i) => <td key={i}>{fmt(x)}</td>)}</tr>
           {hasOver && <tr className="over"><th>上限超過</th>{r.overflow.map((x, i) => <td key={i}>{x > 0 ? `−${fmt(x)}` : ""}</td>)}</tr>}
           <tr className="total-row"><th>パラメータ</th>{r.param.map((x, i) => <td key={i} className={r.overflow[i] > 0 ? "capped" : ""}>{fmt(x)}</td>)}</tr>
-          <tr className="sub"><th>パラボ</th>{r.para.map((x, i) => <td key={i}>{(x * 100).toFixed(1)}%</td>)}</tr>
+          <tr className="sub"><th>パラメータボーナス</th>{r.para.map((x, i) => <td key={i}>{(x * 100).toFixed(1)}%</td>)}</tr>
           <tr className="sub"><th>SP発生率</th>{r.sp.map((x, i) => <td key={i}>{x.toFixed(1)}%</td>)}</tr>
         </tbody>
       </table>

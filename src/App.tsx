@@ -14,9 +14,9 @@ const STATE_KEY = "gkms-sim:state:v1";
 const STEP_KEY = "gkms-sim:step";
 
 const STEPS = [
-  { id: "formation", no: "①", title: "編成", desc: "アイドル・サポカ・メモリー" },
+  { id: "formation", no: "①", title: "編成", desc: "アイドル・サポートカード・メモリー" },
   { id: "schedule", no: "②", title: "スケジュール", desc: "日ごとの行動" },
-  { id: "conditions", no: "③", title: "達成条件", desc: "サポカの発動回数" },
+  { id: "conditions", no: "③", title: "達成条件", desc: "サポートカードの発動回数" },
   { id: "final", no: "④", title: "本選・評価値", desc: "スコアと最終評価" },
 ] as const;
 type StepId = (typeof STEPS)[number]["id"];
@@ -52,7 +52,7 @@ export default function App() {
   const reset = () => {
     const ok = confirm(
       "入力を初期値に戻しますか？\n\n" +
-      "・①編成（アイドル・サポカ・メモリー）、②スケジュール、③達成条件は未選択に戻ります\n" +
+      "・①編成（アイドル・サポートカード・メモリー）、②スケジュール、③達成条件は未選択に戻ります\n" +
       "・HIFボーナス、SP発生率ベース、④本選・評価値は初期値に戻ります\n" +
       "・保存した編成は消えません",
     );
@@ -82,7 +82,7 @@ export default function App() {
             </div>
           </div>
           <div className="top-actions">
-            {D && <span className="data-status">データ: サポカ {D.cards.length}枚 / アイドル {D.idols.length}人</span>}
+            {D && <span className="data-status">データ: サポートカード {D.cards.length}枚 / アイドル {D.idols.length}人</span>}
             <button type="button" className="ghost-btn" onClick={() => setPresets(true)} disabled={!D}>保存・呼び出し</button>
             <button type="button" className="ghost-btn" onClick={reset}>初期値に戻す</button>
           </div>

@@ -32,7 +32,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
               <div key={p} className={`stat-chip ${p.toLowerCase()}`}>
                 <span className="k">{p}</span>
                 <span className="v">{idol.init[i]}</span>
-                <span className="s">パラボ {st.bloom ? idol.par3[i] : idol.par[i]}%</span>
+                <span className="s">パラメータボーナス {st.bloom ? idol.par3[i] : idol.par[i]}%</span>
               </div>
             ))}
           </div>
@@ -73,7 +73,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
         <div className="tbl">
           <table className="grid-table">
             <thead>
-              <tr><th rowSpan={2}></th><th colSpan={3}>初期値</th><th colSpan={3}>パラボ (%)</th></tr>
+              <tr><th rowSpan={2}></th><th colSpan={3}>初期値</th><th colSpan={3}>パラメータボーナス (%)</th></tr>
               <tr>{[...PARAMS, ...PARAMS].map((p, i) => <th key={i} className={`h-${p.toLowerCase()}`}>{p}</th>)}</tr>
             </thead>
             <tbody>
@@ -82,7 +82,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
                   <th className="row-h">{j + 1}</th>
                   {m.map((v, i) => (
                     <td key={i}>
-                      <select value={v} aria-label={`メモリー${j + 1} ${i < 3 ? "初期値" : "パラボ"} ${PARAMS[i % 3]}`} onChange={(e) => update((s) => { s.mem[j][i] = e.target.value; })}>
+                      <select value={v} aria-label={`メモリー${j + 1} ${i < 3 ? "初期値" : "パラメータボーナス"} ${PARAMS[i % 3]}`} onChange={(e) => update((s) => { s.mem[j][i] = e.target.value; })}>
                         {(i < 3 ? MEM_INIT_OPTIONS : MEM_PARA_OPTIONS).map((o) => <option key={o} value={o}>{o || "-"}</option>)}
                       </select>
                     </td>
@@ -100,7 +100,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
             <thead><tr><th></th>{PARAMS.map((p) => <th key={p} className={`h-${p.toLowerCase()}`}>{p}</th>)}</tr></thead>
             <tbody>
               <tr><th className="row-h">初期値</th>{[0, 1, 2].map((i) => <td key={i}><NumberInput value={st.hif[i]} onChange={(v) => update((s) => { s.hif[i] = v; })} ariaLabel={`HIF初期値 ${PARAMS[i]}`} /></td>)}</tr>
-              <tr><th className="row-h">パラボ</th>{[3, 4, 5].map((i) => <td key={i}><NumberInput value={st.hif[i]} step={0.1} suffix="%" onChange={(v) => update((s) => { s.hif[i] = v; })} ariaLabel={`HIFパラボ ${PARAMS[i - 3]}`} /></td>)}</tr>
+              <tr><th className="row-h">パラメータボーナス</th>{[3, 4, 5].map((i) => <td key={i}><NumberInput value={st.hif[i]} step={0.1} suffix="%" onChange={(v) => update((s) => { s.hif[i] = v; })} ariaLabel={`HIFパラメータボーナス ${PARAMS[i - 3]}`} /></td>)}</tr>
             </tbody>
           </table>
         </div>
