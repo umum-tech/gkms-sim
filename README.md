@@ -1,37 +1,45 @@
 # gkms-sim
 
-学園アイドルマスター HIF のプロデュース評価値を計算するシミュレーターです。
+学園アイドルマスター HIF のプロデュース計画を立てて、最終評価値を試算するシミュレーターです。
 
 公開ページ: https://umum-tech.github.io/gkms-sim/
 
-## 構成
+## 使い方
 
-GitHub Pages で公開されるのは `docs/` フォルダの中身だけです。
+画面上部の 4 ステップを順に入力します。右側（スマホでは画面下）の「試算結果」は入力のたびに更新されます。
 
-| パス | 内容 |
-|---|---|
-| `docs/index.html` | 画面 |
-| `docs/assets/app.js` | 計算ロジック・CSV読込 |
-| `docs/assets/style.css` | スタイル（ライト/ダークモード対応） |
-| `docs/data/support-cards.csv` | サポートカード一覧 |
-| `docs/data/idols.csv` | アイドル一覧 |
+1. **編成** — アイドル、サポートカード 6 枚、メモリー、HIF ボーナス
+2. **スケジュール** — 選抜試験 20 日・本選 7 日の行動（レッスンの種類、授業、試験、相談・差し入れなど）
+3. **達成条件** — サポートカードの「〜時にパラメータ上昇」の発生回数（スケジュールから自動計算できない分を手入力）
+4. **本選・評価値** — スター性と本選スコア
+
+入力内容はブラウザに自動保存されます。
 
 ## データ更新手順
 
+カードやアイドルのデータは `public/data/` の CSV から読み込みます。
+
 1. Excel の「サポートカード一覧」「アイドル」シートを CSV で保存する
    - 保存形式は **「CSV UTF-8 (コンマ区切り)」** を推奨（Shift_JIS でも動作しますが、GitHub 上で文字化けして見えます）
-2. ファイル名を `support-cards.csv` / `idols.csv` にして `docs/data/` に上書きする
-3. コミットしてプッシュする（GitHub の Web 画面から「Add file → Upload files」でも可）
-4. 1〜2分で公開ページに反映される
+2. ファイル名を `support-cards.csv` / `idols.csv` にして `public/data/` に上書きする
+   - GitHub の画面なら `public/data` を開いて「Add file → Upload files」
+3. main ブランチに反映されると GitHub Actions が自動でビルドし、2〜3 分で公開ページに反映される
 
-列の並び（見出し名）は変更しないでください。`name`・`sum`・`ability_5`・`VoSP率+` などの見出しを手がかりに読み込んでいます。
+列の見出し（`name`・`plan`・`sum`・`ability_5`・`VoSP率+` など）は読み込みの目印にしているため変更しないでください。
 
-## ローカルで確認する
-
-`index.html` をダブルクリックで開くとブラウザの制限で CSV を読み込めません。`docs/` で簡易サーバーを起動して開いてください。
+## 開発
 
 ```sh
-cd docs
-python -m http.server 8000
-# → http://localhost:8000/
+npm install
+npm run dev        # http://localhost:5173/ で確認
+npm run build      # dist/ に出力（公開は GitHub Actions が行う）
+npm run typecheck
 ```
+
+| パス | 内容 |
+|---|---|
+| `src/lib/master.ts` | ゲーム仕様の固定値（レッスン上昇量、ランク閾値、日程など） |
+| `src/lib/calc.ts` | 評価値の計算 |
+| `src/lib/data.ts` | CSV の読み込み |
+| `src/components/` | 各ステップの画面 |
+| `.github/workflows/deploy.yml` | GitHub Pages への自動デプロイ |
