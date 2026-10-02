@@ -105,7 +105,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
           </table>
         </div>
         <label className="inline-field">
-          <span>SP発生率ベース</span>
+          <span>SP発生率ベース（特訓6段階＋HIFボーナス）</span>
           <NumberInput value={st.spBase} step={0.1} suffix="%" onChange={(v) => update((s) => { s.spBase = v; })} />
         </label>
       </Panel>
@@ -119,16 +119,16 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
             </thead>
             <tbody>
               {([
-                ["アイドル", r.startParts.idol, r.paraParts.idol],
-                ["サポートカード", r.startParts.cards, r.paraParts.cards],
-                ["メモリー", r.startParts.memory, r.paraParts.memory],
-                ["HIFボーナス", r.startParts.hif, r.paraParts.hif],
-              ] as [string, Vec, Vec][]).map(([label, a, b]) => (
+                ["アイドル", r.startParts.idol, r.paraParts.idol, null],
+                ["サポートカード", r.startParts.cards, r.paraParts.cards, r.spParts.cards],
+                ["メモリー", r.startParts.memory, r.paraParts.memory, null],
+                ["HIFボーナス", r.startParts.hif, r.paraParts.hif, r.spParts.base],
+              ] as [string, Vec, Vec, Vec | null][]).map(([label, a, b, c]) => (
                 <tr key={label}>
                   <th className="row-h">{label}</th>
                   {a.map((x, i) => <td key={"a" + i}>{x || ""}</td>)}
                   {b.map((x, i) => <td key={"b" + i}>{x ? `${+x.toFixed(1)}%` : ""}</td>)}
-                  <td colSpan={3} className="muted-cell"></td>
+                  {c ? c.map((x, i) => <td key={"c" + i}>{x ? `${+x.toFixed(1)}%` : ""}</td>) : <td colSpan={3}></td>}
                 </tr>
               ))}
               <tr className="total-row">
@@ -140,6 +140,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
             </tbody>
           </table>
         </div>
+        <p className="hint table-note">※ HIFボーナス行のSP発生率は「SP発生率ベース（特訓6段階＋HIFボーナス）」の入力値です。</p>
       </Panel>
 
       {picking !== null && (

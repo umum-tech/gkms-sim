@@ -55,6 +55,7 @@ export interface Result {
   paraParts: { idol: Vec; cards: Vec; memory: Vec; hif: Vec };
   para: Vec;
   cardGain: Vec;
+  spParts: { base: Vec; cards: Vec };
   sp: Vec;
   lesson: Vec[];
   cls: Vec[];
@@ -112,7 +113,8 @@ export function compute(st: SimState, D: Dataset): Result {
   const start = vec((i) => startParts.idol[i] + startParts.cards[i] + startParts.memory[i] + startParts.hif[i]);
   const para = vec((i) => (paraParts.idol[i] + paraParts.cards[i] + paraParts.memory[i] + paraParts.hif[i]) / 100);
   const cardGain = vec((i) => cards.filter((k) => k.card.plan === PARAMS[i]).reduce((a, k) => a + k.sum, 0));
-  const sp = vec((i) => num(st.spBase) + picked.reduce((a, { card }) => a + card.sp[i], 0));
+  const spParts = { base: vec(() => num(st.spBase)), cards: vec((i) => picked.reduce((a, { card }) => a + card.sp[i], 0)) };
+  const sp = vec((i) => spParts.base[i] + spParts.cards[i]);
 
   const lesson = LESSON.map((l, j): Vec => {
     const { m: h, s } = st.lessons[j], isSP = /SP$/.test(h);
@@ -135,7 +137,7 @@ export function compute(st: SimState, D: Dataset): Result {
   const nx = RANK.find(([s]) => s > score);
 
   return {
-    idol, counts, isAuto, usedBy, cards, startParts, start, paraParts, para, cardGain, sp,
+    idol, counts, isAuto, usedBy, cards, startParts, start, paraParts, para, cardGain, spParts, sp,
     lesson, cls, exam, totals, param, total, e1, e2, score, rank,
     next: nx ? { rank: nx[1], need: nx[0] - score } : null,
   };
