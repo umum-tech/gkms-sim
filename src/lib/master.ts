@@ -112,6 +112,9 @@ export const DEFAULT_STATE: SimState = {
   r2: "2400000",
 };
 
+/** Vo/Da/Vi 各パラメータの上限 */
+export const PARAM_MAX = 3200;
+
 /** スター性の上限 */
 export const STAR_MAX = 1335;
 

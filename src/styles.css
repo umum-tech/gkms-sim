@@ -326,6 +326,10 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accen
 .bar .seg-cls { opacity: .42; }
 .bar .seg-exam { opacity: .26; }
 .bar span + span { box-shadow: inset 1px 0 0 var(--surface); }
+.bars-cap { font-size: 11px; color: var(--muted); }
+.cap-hit { color: var(--warn); font-weight: 700; margin-right: 6px; }
+.res-table .over th, .res-table .over td { color: var(--warn); font-size: 12px; }
+.res-table td.capped { color: var(--warn); }
 .bar-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: var(--muted); }
 .bar-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--muted); margin-right: 4px; vertical-align: -1px; }
 .bar-legend .seg-start { opacity: 1; } .bar-legend .seg-card { opacity: .8; } .bar-legend .seg-lesson { opacity: .6; } .bar-legend .seg-cls { opacity: .42; } .bar-legend .seg-exam { opacity: .26; }

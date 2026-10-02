@@ -1,6 +1,6 @@
 // 評価値の計算。式は旧版（hif-hyoka.html の compute）と同一で、画面表示用の内訳を追加で返す。
 import { num, type Card, type Dataset, type Idol } from "./data";
-import { CLASS, DEF_COUNTS, EXAM, LESSON, PARAMS, R1, R2, RANK, SCHED, type SimState } from "./master";
+import { CLASS, DEF_COUNTS, EXAM, LESSON, PARAMS, PARAM_MAX, R1, R2, RANK, SCHED, type SimState } from "./master";
 
 type Vec = [number, number, number];
 const fl = (x: number) => Math.floor(x + 1e-9);
@@ -61,6 +61,11 @@ export interface Result {
   cls: Vec[];
   exam: Vec[];
   totals: { lesson: Vec; cls: Vec; exam: Vec };
+  /** 上限適用前のパラメータ */
+  rawParam: Vec;
+  /** 上限で切り捨てられた分 */
+  overflow: Vec;
+  /** 上限（PARAM_MAX）適用後のパラメータ */
   param: Vec;
   total: number;
   e1: number;
@@ -129,7 +134,10 @@ export function compute(st: SimState, D: Dataset): Result {
     return x + fl(x * para[i]);
   }));
   const totals = { lesson: sumRows(lesson), cls: sumRows(cls), exam: sumRows(exam) };
-  const param = vec((i) => start[i] + cardGain[i] + totals.lesson[i] + totals.cls[i] + totals.exam[i]);
+  const rawParam = vec((i) => start[i] + cardGain[i] + totals.lesson[i] + totals.cls[i] + totals.exam[i]);
+  // 上昇量はすべて0以上なので、最後にまとめて上限を適用しても途中で頭打ちにした場合と結果は同じ
+  const param = vec((i) => Math.min(rawParam[i], PARAM_MAX));
+  const overflow = vec((i) => rawParam[i] - param[i]);
   const total = param[0] + param[1] + param[2];
   const e1 = roundEval(num(st.r1), R1), e2 = roundEval(num(st.r2), R2);
   const score = total * 2 + num(st.star) * 7.5 + e1 + e2 - 2000;
@@ -138,7 +146,7 @@ export function compute(st: SimState, D: Dataset): Result {
 
   return {
     idol, counts, isAuto, usedBy, cards, startParts, start, paraParts, para, cardGain, spParts, sp,
-    lesson, cls, exam, totals, param, total, e1, e2, score, rank,
+    lesson, cls, exam, totals, rawParam, overflow, param, total, e1, e2, score, rank,
     next: nx ? { rank: nx[1], need: nx[0] - score } : null,
   };
 }
