@@ -64,7 +64,7 @@ export const SCHED: [Phase, number, Activity[]][] = [
 export const MEM_INIT_OPTIONS = ["", "10", "15", "20", "25"];
 export const MEM_PARA_OPTIONS = ["", "1.4", "2.1", "2.8", "3.5"];
 
-/** 手入力する条件の初期値（旧版の既定値） */
+/** 手入力する条件の目安回数（旧版の既定値） */
 export const DEF_COUNTS: Record<string, number> = {
   "SP終了時デッキ20枚以上（4回のみ）": 4, "相談Pドリンク交換後": 15, "スキル削除時": 6, "スキル強化時": 10,
   "スキル（SSR）獲得時": 20, "スキル獲得時": 10, "スキルカスタム時（6回のみ）": 6, "スキルチェンジ時（3回のみ）": 3,
@@ -94,7 +94,29 @@ export interface SimState {
   r2: string;
 }
 
+/** 初期状態。HIFボーナス・SP発生率ベース・本選の値以外は未選択。 */
 export const DEFAULT_STATE: SimState = {
+  idol: "",
+  bloom: false,
+  cards: Array(6).fill(""),
+  mem: Array.from({ length: 4 }, () => Array(6).fill("")),
+  hif: ["100", "100", "100", "10", "10", "10"],
+  spBase: "20",
+  lessons: Array.from({ length: 8 }, () => ({ m: "", s: "-" })),
+  classes: Array(6).fill(""),
+  exams: Array(3).fill(""),
+  sched: Array(27).fill(""),
+  counts: {},
+  star: "1335",
+  r1: "1400000",
+  r2: "2400000",
+};
+
+/** スター性の上限 */
+export const STAR_MAX = 1335;
+
+/** サンプル編成（旧版の初期値。評価値 35,064.5 / S5） */
+export const SAMPLE_STATE: SimState = {
   idol: "花海咲季",
   bloom: true,
   cards: ["いつまでも続けばいいのに", "もうすぐ本番ですね", "そろそろ焼けたかな？", "上かッ！！", "やっと見つけたぞ！", "進化したお弁当、気になる"],

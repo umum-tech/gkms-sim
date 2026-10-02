@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { compute, normalize } from "./lib/calc";
+import { compute, fillCounts, normalize } from "./lib/calc";
 import { loadDataset, type Dataset } from "./lib/data";
-import { DEFAULT_STATE, SCHED, type SimState } from "./lib/master";
+import { DEFAULT_STATE, SAMPLE_STATE, SCHED, type SimState } from "./lib/master";
 import { ConditionsStep } from "./components/ConditionsStep";
 import { FinalStep } from "./components/FinalStep";
 import { FormationStep } from "./components/FormationStep";
+import { PresetDialog } from "./components/PresetDialog";
 import { ResultPanel } from "./components/ResultPanel";
 import { ScheduleStep } from "./components/ScheduleStep";
 import { Assume, fmt } from "./components/ui";
@@ -35,6 +36,7 @@ export default function App() {
     try { return (localStorage.getItem(STEP_KEY) as StepId) || "formation"; } catch { return "formation"; }
   });
   const [sheet, setSheet] = useState(false);
+  const [presets, setPresets] = useState(false);
 
   useEffect(() => { loadDataset().then(setD).catch((e: Error) => setError(e.message)); }, []);
   useEffect(() => { try { localStorage.setItem(STATE_KEY, JSON.stringify(st)); } catch { /* 保存できなくても動作は継続 */ } }, [st]);
@@ -47,13 +49,23 @@ export default function App() {
   const r = useMemo(() => (D ? compute(st, D) : null), [st, D]);
 
   const go = (id: StepId) => { setStep(id); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const reset = () => { if (confirm("すべての入力を初期値に戻しますか？")) setSt(normalize({}, DEFAULT_STATE)); };
+  const reset = () => {
+    const ok = confirm(
+      "入力を初期値に戻しますか？\n\n" +
+      "・①編成（アイドル・サポカ・メモリー）、②スケジュール、③達成条件は未選択に戻ります\n" +
+      "・HIFボーナス、SP発生率ベース、④本選・評価値は初期値に戻ります\n" +
+      "・保存した編成は消えません",
+    );
+    if (ok) setSt(normalize({}, DEFAULT_STATE));
+  };
+  const loadSample = () => { if (D) setSt(normalize(fillCounts(SAMPLE_STATE, D.conds), DEFAULT_STATE)); };
 
   // ステップごとの「まだ入力が必要そうな箇所」
   const todo: Record<StepId, number> = {
     formation: (st.idol ? 0 : 1) + (r ? 6 - r.cards.length : 0),
-    schedule: SCHED.filter((s, j) => s[2].length > 1 && !st.sched[j]).length,
-    conditions: 0,
+    schedule: SCHED.filter((s, j) => s[2].length > 1 && !st.sched[j]).length
+      + st.lessons.filter((l) => !l.m).length + st.classes.filter((v) => !v).length + st.exams.filter((v) => !v).length,
+    conditions: D && r ? D.conds.filter((c) => r.usedBy[c].length && !r.isAuto[c] && (st.counts[c] ?? "") === "").length : 0,
     final: 0,
   };
   const idx = STEPS.findIndex((s) => s.id === step);
@@ -71,6 +83,7 @@ export default function App() {
           </div>
           <div className="top-actions">
             {D && <span className="data-status">データ: サポカ {D.cards.length}枚 / アイドル {D.idols.length}人</span>}
+            <button type="button" className="ghost-btn" onClick={() => setPresets(true)} disabled={!D}>保存・呼び出し</button>
             <button type="button" className="ghost-btn" onClick={reset}>初期値に戻す</button>
           </div>
         </div>
@@ -124,6 +137,15 @@ export default function App() {
         </button>
       )}
       {sheet && <div className="backdrop" onClick={() => setSheet(false)} />}
+      {presets && (
+        <PresetDialog
+          st={st}
+          r={r}
+          onLoad={(s) => setSt(normalize(s, DEFAULT_STATE))}
+          onLoadSample={loadSample}
+          onClose={() => setPresets(false)}
+        />
+      )}
     </div>
   );
 }

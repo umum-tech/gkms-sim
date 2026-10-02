@@ -110,6 +110,12 @@ h1, h2, h3 { margin: 0; }
 .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); cursor: pointer; }
 .link-btn { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; font-weight: 700; }
 .link-btn.sm { font-size: 11px; font-weight: 500; }
+.primary-btn.sm { padding: 4px 12px; font-size: 12px; white-space: nowrap; }
+.ghost-btn.danger { color: var(--warn); }
+.ghost-btn:disabled { opacity: .5; cursor: default; }
+.ghost-btn.sm { padding: 4px 10px; font-size: 12px; white-space: nowrap; }
+.field-warn { color: var(--warn); font-size: 12px; font-weight: 700; }
+.num-input input::placeholder { color: var(--muted); opacity: .7; font-weight: 400; }
 
 select, input[type="search"] {
   border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 8px; min-height: 32px; width: 100%;
@@ -129,6 +135,7 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accen
 .seg.sm button { padding: 3px 10px; font-size: 13px; min-width: 42px; }
 .seg button:hover { border-color: var(--accent-2); }
 .seg button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.seg button.blank.on { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
 .seg button.vo.on { background: var(--vo); border-color: var(--vo); color: #fff; }
 .seg button.da.on { background: var(--da); border-color: var(--da); color: #fff; }
 .seg button.vi.on { background: var(--vi); border-color: var(--vi); color: #3d2b00; }
@@ -206,6 +213,27 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accen
 .pick-stats { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted); }
 .pick-stats b { color: var(--text); }
 
+/* 保存・呼び出し */
+.preset { width: min(640px, calc(100vw - 24px)); }
+.preset-save { padding: 0 16px 14px; border-bottom: 1px solid var(--border); }
+.preset-save .hint { margin: 0 0 8px; }
+.preset-save-row { display: flex; gap: 8px; }
+.preset-save-row input { flex: 1; min-width: 0; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 6px 10px; }
+.preset-msg { margin: 8px 0 0; font-size: 12px; color: var(--accent); font-weight: 700; }
+.preset-list { list-style: none; margin: 0; padding: 8px; overflow-y: auto; }
+.preset-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px; }
+.preset-item.sample { border-style: dashed; background: var(--surface-2); }
+.preset-info { display: flex; flex-direction: column; min-width: 0; }
+.preset-name { font-weight: 700; overflow-wrap: anywhere; }
+.preset-meta { font-size: 11px; color: var(--muted); }
+.preset-meta b { color: var(--text); }
+.preset-actions { display: flex; gap: 6px; flex: none; }
+.preset-note { padding: 8px 16px 14px; margin: 0; border-top: 1px solid var(--border); }
+@media (max-width: 560px) {
+  .preset-item { flex-direction: column; align-items: stretch; }
+  .preset-save-row { flex-direction: column; }
+}
+
 /* ---------- ② スケジュール ---------- */
 .schedule .phase { margin-bottom: 16px; padding: 0; overflow: hidden; }
 .phase-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
@@ -247,6 +275,7 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accen
 .cond-list { list-style: none; margin: 0; padding: 0; }
 .cond { display: grid; grid-template-columns: minmax(0, 1fr) auto 200px; gap: 12px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--border); }
 .cond:last-child { border-bottom: none; }
+.cond.pending { background: var(--warn-soft); border-radius: 8px; }
 .cond-name { font-weight: 700; display: flex; flex-direction: column; }
 .cond-cards { font-size: 11px; font-weight: 400; color: var(--muted); }
 .cond-val { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }

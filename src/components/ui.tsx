@@ -37,7 +37,7 @@ export function Segmented<T extends string>({ value, options, onChange, labels, 
           type="button"
           role="radio"
           aria-checked={value === o}
-          className={`${value === o ? "on" : ""} ${colored && isParam(o) ? o.toLowerCase() : ""}`}
+          className={`${value === o ? "on" : ""} ${o === "" ? "blank" : ""} ${colored && isParam(o) ? o.toLowerCase() : ""}`}
           onClick={() => onChange(o)}
         >
           {labels?.[o] ?? (o || "なし")}
@@ -47,8 +47,8 @@ export function Segmented<T extends string>({ value, options, onChange, labels, 
   );
 }
 
-export function NumberInput({ value, onChange, step, suffix, readOnly, ariaLabel, wide }: {
-  value: string | number; onChange?: (v: string) => void; step?: number; suffix?: string; readOnly?: boolean; ariaLabel?: string; wide?: boolean;
+export function NumberInput({ value, onChange, step, max, placeholder, suffix, readOnly, ariaLabel, wide }: {
+  value: string | number; onChange?: (v: string) => void; step?: number; max?: number; placeholder?: string; suffix?: string; readOnly?: boolean; ariaLabel?: string; wide?: boolean;
 }) {
   return (
     <span className={`num-input ${readOnly ? "ro" : ""} ${wide ? "wide" : ""}`}>
@@ -56,6 +56,9 @@ export function NumberInput({ value, onChange, step, suffix, readOnly, ariaLabel
         type="number"
         inputMode="decimal"
         step={step}
+        min={0}
+        max={max}
+        placeholder={placeholder}
         value={value}
         readOnly={readOnly}
         aria-label={ariaLabel}

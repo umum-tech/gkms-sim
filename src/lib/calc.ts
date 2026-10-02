@@ -33,7 +33,7 @@ export function autoCount(name: string, st: SimState): number | null {
   return null;
 }
 
-/** 手入力条件の既定値: 旧版の既定値 → 「（n回のみ）」の n → 10 */
+/** 手入力条件の目安回数: 旧版の既定値 → 「（n回のみ）」の n → 10 */
 export function defaultCount(name: string): number {
   if (name in DEF_COUNTS) return DEF_COUNTS[name];
   const m = name.match(/（(\d+)回のみ）/);
@@ -79,7 +79,7 @@ export function compute(st: SimState, D: Dataset): Result {
   for (const c of D.conds) {
     const a = autoCount(c, st);
     isAuto[c] = a !== null;
-    counts[c] = a ?? (st.counts[c] !== undefined ? num(st.counts[c]) : defaultCount(c));
+    counts[c] = a ?? num(st.counts[c] ?? "");
     usedBy[c] = picked.filter(({ card }) => (card.cond[c] ?? 0) > 0 || card.ev1c === c).map(({ card }) => card.name);
   }
 
@@ -143,9 +143,20 @@ export function compute(st: SimState, D: Dataset): Result {
   };
 }
 
+/** 手入力条件のうち未入力のものに目安回数を入れる */
+export function fillCounts(st: SimState, conds: string[]): SimState {
+  const counts = { ...st.counts };
+  for (const c of conds) if ((counts[c] ?? "") === "") counts[c] = String(defaultCount(c));
+  return { ...st, counts };
+}
+
 /** 保存データを現在の形式に揃える（欠けた項目は既定値、固定日の行動は自動設定） */
 export function normalize(raw: Partial<SimState>, def: SimState): SimState {
-  const st: SimState = { ...structuredClone(def), ...raw };
+  const st: SimState = { ...structuredClone(def), ...structuredClone(raw) };
+  // 旧形式の「-」（なし）は未選択として扱う
+  st.lessons = st.lessons.map((l) => ({ m: l.m === "-" ? "" : l.m, s: l.s || "-" }));
+  st.classes = st.classes.map((v) => (v === "-" ? "" : v));
+  st.exams = st.exams.map((v) => (v === "-" ? "" : v));
   st.sched = SCHED.map((s, j) => (s[2].length === 1 ? s[2][0] : s[2].includes(st.sched[j] as never) ? st.sched[j] : ""));
   return st;
 }
