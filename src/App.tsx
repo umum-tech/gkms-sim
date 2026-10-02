@@ -7,7 +7,7 @@ import { FinalStep } from "./components/FinalStep";
 import { FormationStep } from "./components/FormationStep";
 import { ResultPanel } from "./components/ResultPanel";
 import { ScheduleStep } from "./components/ScheduleStep";
-import { fmt } from "./components/ui";
+import { Assume, fmt } from "./components/ui";
 
 const STATE_KEY = "gkms-sim:state:v1";
 const STEP_KEY = "gkms-sim:step";
@@ -65,7 +65,7 @@ export default function App() {
           <div className="brand">
             <span className="logo">HIF</span>
             <div>
-              <h1>学マス プロデュースシミュレーター</h1>
+              <h1>学マス プロデュースシミュレーター <Assume>HIF編想定</Assume></h1>
               <p>編成とスケジュールを組み立てて、最終評価値を試算します</p>
             </div>
           </div>

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Card } from "../lib/data";
 import { PARAMS } from "../lib/master";
-import { PlanBadge, Segmented } from "./ui";
+import { Assume, PlanBadge, Segmented, SpRate } from "./ui";
 
-type Sort = "sum" | "init" | "par" | "name";
-const SORT_LABEL: Record<Sort, string> = { sum: "上昇量合計", init: "初期値", par: "パラボ", name: "名前" };
+type Sort = "sum" | "sp" | "name";
+const SORT_LABEL: Record<Sort, string> = { sum: "上昇量合計", sp: "SP発生率", name: "名前" };
 
 export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
   cards: Card[]; slot: number; current: string; taken: string[]; onPick: (name: string) => void; onClose: () => void;
@@ -19,7 +19,7 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
   const list = useMemo(() => {
     const kw = q.trim().toLowerCase();
     const r = cards.filter((c) => (!plan || c.plan === plan) && (!kw || c.name.toLowerCase().includes(kw)));
-    const key: Record<Sort, (c: Card) => number> = { sum: (c) => c.sumRef, init: (c) => c.init, par: (c) => c.par, name: () => 0 };
+    const key: Record<Sort, (c: Card) => number> = { sum: (c) => c.sumRef, sp: (c) => Math.max(...c.sp), name: () => 0 };
     return sort === "name" ? r.sort((a, b) => a.name.localeCompare(b.name, "ja")) : r.sort((a, b) => key[sort](b) - key[sort](a));
   }, [cards, q, plan, sort]);
 
@@ -27,7 +27,7 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
     <dialog ref={ref} className="picker" onClose={onClose} onClick={(e) => e.target === ref.current && ref.current?.close()}>
       <div className="picker-body">
         <header className="picker-head">
-          <h3>サポートカード {slot + 1} を選ぶ</h3>
+          <h3>サポートカード {slot + 1} を選ぶ <Assume>上限解放4・レベル上限想定</Assume></h3>
           <button type="button" className="icon-btn" aria-label="閉じる" onClick={() => ref.current?.close()}>✕</button>
         </header>
         <div className="picker-tools">
@@ -57,9 +57,7 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
                   <span className="pick-name">{c.name}{used && <small>（編成済み）</small>}</span>
                   <span className="pick-stats">
                     <span>合計 <b>{c.sumRef}</b></span>
-                    {c.init ? <span>初期値 +{c.init}</span> : null}
-                    {c.par ? <span>パラボ +{c.par}%</span> : null}
-                    {c.sp.some(Boolean) && <span>SP率 +{Math.max(...c.sp)}%</span>}
+                    <SpRate sp={c.sp} />
                   </span>
                 </button>
               </li>

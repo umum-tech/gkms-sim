@@ -3,7 +3,7 @@ import type { Result } from "../lib/calc";
 import type { Dataset } from "../lib/data";
 import { MEM_INIT_OPTIONS, MEM_PARA_OPTIONS, PARAMS, type SimState } from "../lib/master";
 import { CardPicker } from "./CardPicker";
-import { NumberInput, Panel, PlanBadge, fmt } from "./ui";
+import { Assume, NumberInput, Panel, PlanBadge, SpRate, fmt } from "./ui";
 
 type Update = (fn: (s: SimState) => void) => void;
 type Vec = [number, number, number];
@@ -15,7 +15,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
 
   return (
     <div className="step-grid">
-      <Panel title="アイドル" hint="プロデュースするアイドルを選びます。才能開花3以上ならチェックを入れてください。">
+      <Panel title="アイドル" hint={<>プロデュースするアイドルを選びます。才能開花3以上ならチェックを入れてください。<Assume>特訓6想定</Assume></>}>
         <div className="idol-row">
           <select className="big-select" value={st.idol} onChange={(e) => update((s) => { s.idol = e.target.value; })}>
             <option value="">選択してください</option>
@@ -41,7 +41,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
 
       <Panel
         title="サポートカード"
-        hint="6枚を編成します。カードをクリックすると一覧から選べます。"
+        hint={<>6枚を編成します。カードをクリックすると一覧から選べます。<Assume>上限解放4・レベル上限想定</Assume></>}
         actions={<span className="plan-count">{PARAMS.map((p, i) => <PlanBadge key={p} plan={p}>{p} {planCount[i]}</PlanBadge>)}</span>}
         className="span-2"
       >
@@ -56,8 +56,7 @@ export function FormationStep({ st, update, D, r }: { st: SimState; update: Upda
                     <span className="slot-name">{k.card.name}</span>
                     <span className="slot-meta">
                       <PlanBadge plan={k.card.plan} />
-                      {k.card.init ? <span>初期値+{k.card.init}</span> : null}
-                      {k.card.par ? <span>パラボ+{k.card.par}%</span> : null}
+                      <SpRate sp={k.card.sp} />
                     </span>
                     <span className="slot-sum">見込み <b>+{fmt(k.sum)}</b></span>
                   </>

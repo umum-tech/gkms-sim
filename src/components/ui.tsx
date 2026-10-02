@@ -66,6 +66,21 @@ export function NumberInput({ value, onChange, step, suffix, readOnly, ariaLabel
   );
 }
 
+/** サポートカードの SP 発生率上昇（0 のパラメータは省略） */
+export function SpRate({ sp }: { sp: number[] }) {
+  const items = PARAMS.map((p, i) => [p, sp[i]] as const).filter(([, v]) => v);
+  return (
+    <span className="sp-rate">
+      SP発生率 {items.length ? items.map(([p, v]) => <b key={p} className={`h-${p.toLowerCase()}`}>{p}+{v}%</b>) : <b>なし</b>}
+    </span>
+  );
+}
+
+/** 計算の前提条件を示す小さなラベル */
+export function Assume({ children }: { children: ReactNode }) {
+  return <span className="assume">{children}</span>;
+}
+
 /** Vo/Da/Vi の上昇量をコンパクトに並べる */
 export function Gains({ v, prefix = "+", hideZero = true }: { v: number[]; prefix?: string; hideZero?: boolean }) {
   return (
