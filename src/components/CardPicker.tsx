@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Card } from "../lib/data";
-import { PARAMS } from "../lib/master";
+import { PARAMS, PLAN_TYPES, PLAN_TYPE_LABEL } from "../lib/master";
 import { Assume, PlanBadge, Segmented, SpRate } from "./ui";
 
 type Sort = "sum" | "sp" | "name";
@@ -12,6 +12,7 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
   const ref = useRef<HTMLDialogElement>(null);
   const [q, setQ] = useState("");
   const [plan, setPlan] = useState<string>("");
+  const [planType, setPlanType] = useState<string>("");
   const [sort, setSort] = useState<Sort>("sum");
   const [spOnly, setSpOnly] = useState(false);
 
@@ -19,10 +20,10 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
 
   const list = useMemo(() => {
     const kw = q.trim().toLowerCase();
-    const r = cards.filter((c) => (!plan || c.plan === plan) && (!spOnly || c.sp.some(Boolean)) && (!kw || c.name.toLowerCase().includes(kw)));
+    const r = cards.filter((c) => (!plan || c.plan === plan) && (!planType || c.planType === planType) && (!spOnly || c.sp.some(Boolean)) && (!kw || c.name.toLowerCase().includes(kw)));
     const key: Record<Sort, (c: Card) => number> = { sum: (c) => c.sumRef, sp: (c) => Math.max(...c.sp), name: () => 0 };
     return sort === "name" ? r.sort((a, b) => a.name.localeCompare(b.name, "ja")) : r.sort((a, b) => key[sort](b) - key[sort](a));
-  }, [cards, q, plan, sort, spOnly]);
+  }, [cards, q, plan, planType, sort, spOnly]);
 
   return (
     <dialog ref={ref} className="picker" onClose={onClose} onClick={(e) => e.target === ref.current && ref.current?.close()}>
@@ -33,7 +34,12 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
         </header>
         <div className="picker-tools">
           <input type="search" placeholder="カード名で検索" value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
-          <Segmented value={plan} options={["", ...PARAMS]} labels={{ "": "すべて" }} onChange={setPlan} colored size="sm" />
+          <div className="filter-row"><span className="filter-k">タイプ</span>
+            <Segmented value={plan} options={["", ...PARAMS]} labels={{ "": "すべて" }} onChange={setPlan} colored size="sm" />
+          </div>
+          <div className="filter-row"><span className="filter-k">プラン</span>
+            <Segmented value={planType} options={["", ...PLAN_TYPES]} labels={{ "": "すべて", ...PLAN_TYPE_LABEL }} onChange={setPlanType} size="sm" />
+          </div>
           <label className={`sp-toggle ${spOnly ? "on" : ""}`}>
             <input type="checkbox" checked={spOnly} onChange={(e) => setSpOnly(e.target.checked)} />
             SP発生率ありのみ
@@ -62,6 +68,7 @@ export function CardPicker({ cards, slot, current, taken, onPick, onClose }: {
                   <PlanBadge plan={c.plan} />
                   <span className="pick-name">{c.name}{used && <small>（編成済み）</small>}</span>
                   <span className="pick-stats">
+                    <span className="plan-type">{PLAN_TYPE_LABEL[c.planType] ?? c.planType}</span>
                     <span>合計 <b>{c.sumRef}</b></span>
                     <SpRate sp={c.sp} />
                   </span>

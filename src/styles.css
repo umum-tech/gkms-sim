@@ -202,6 +202,10 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--accen
 .picker-tools input[type="search"] { flex: 1 1 220px; }
 .sort { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; }
 .sort select { width: auto; }
+.picker-tools input[type="search"] { flex-basis: 100%; }
+.filter-row { display: flex; align-items: center; gap: 6px; }
+.filter-k { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.plan-type { padding: 0 6px; border-radius: 4px; background: var(--surface-3); color: var(--text); font-weight: 700; }
 .picker-count { margin: 0; padding: 6px 18px 0; font-size: 12px; color: var(--muted); }
 .picker-list { list-style: none; margin: 0; padding: 8px; overflow-y: auto; }
 .pick-item { width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; text-align: left; padding: 8px 10px; border-radius: 10px; border: 1px solid transparent; background: none; cursor: pointer; }

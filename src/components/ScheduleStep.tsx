@@ -27,6 +27,7 @@ export function ScheduleStep({ st, update, r, goFinal }: { st: SimState; update:
               value={st.sched[j] as Activity | ""}
               options={["", ...options] as (Activity | "")[]}
               labels={{ "": "未選択" }}
+              pendingEmpty
               onChange={(v) => update((s) => { s.sched[j] = v; })}
             />
           </div>
@@ -44,7 +45,7 @@ export function ScheduleStep({ st, update, r, goFinal }: { st: SimState; update:
         control: (
           <div className="ctl lesson-ctl">
             <div className="ctl-line"><span className="ctl-k">メイン</span>
-              <Segmented value={main} options={PARAM_OPTS} labels={PARAM_LABELS} colored size="sm" onChange={(v) => setMain(v, sp)} />
+              <Segmented value={main} options={PARAM_OPTS} labels={PARAM_LABELS} pendingEmpty colored size="sm" onChange={(v) => setMain(v, sp)} />
               <label className={`sp-toggle ${sp ? "on" : ""}`}>
                 <input type="checkbox" checked={sp} disabled={!main} onChange={(e) => setMain(main, e.target.checked)} />
                 SPレッスン
@@ -64,7 +65,7 @@ export function ScheduleStep({ st, update, r, goFinal }: { st: SimState; update:
         ...base, pending: !st.classes[k], label: "授業", gains: r.cls[k],
         control: (
           <div className="ctl"><div className="ctl-line"><span className="ctl-k">上げる</span>
-            <Segmented value={st.classes[k] as (typeof PARAM_OPTS)[number]} options={PARAM_OPTS} labels={PARAM_LABELS} colored size="sm" onChange={(v) => update((x) => { x.classes[k] = v; })} />
+            <Segmented value={st.classes[k] as (typeof PARAM_OPTS)[number]} options={PARAM_OPTS} labels={PARAM_LABELS} pendingEmpty colored size="sm" onChange={(v) => update((x) => { x.classes[k] = v; })} />
           </div></div>
         ),
       };
@@ -75,7 +76,7 @@ export function ScheduleStep({ st, update, r, goFinal }: { st: SimState; update:
         ...base, pending: !st.exams[k], label: EXAM[k][0], gains: r.exam[k],
         control: (
           <div className="ctl"><div className="ctl-line"><span className="ctl-k">追加上昇</span>
-            <Segmented value={st.exams[k] as (typeof PARAM_OPTS)[number]} options={PARAM_OPTS} labels={PARAM_LABELS} colored size="sm" onChange={(v) => update((x) => { x.exams[k] = v; })} />
+            <Segmented value={st.exams[k] as (typeof PARAM_OPTS)[number]} options={PARAM_OPTS} labels={PARAM_LABELS} pendingEmpty colored size="sm" onChange={(v) => update((x) => { x.exams[k] = v; })} />
           </div><span className="ctl-note">全パラメータ +{EXAM[k][1]}、選んだパラメータにさらに +{EXAM[k][2]}（パラメータボーナス込み）</span></div>
         ),
       };

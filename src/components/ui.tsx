@@ -25,9 +25,9 @@ export function Panel({ title, hint, actions, children, className = "" }: {
   );
 }
 
-/** ボタン型の単一選択 */
-export function Segmented<T extends string>({ value, options, onChange, labels, colored, size }: {
-  value: T; options: readonly T[]; onChange: (v: T) => void; labels?: Partial<Record<T, string>>; colored?: boolean; size?: "sm";
+/** ボタン型の単一選択。pendingEmpty のとき、空値（未選択）を選んだ状態を注意色で表示する。 */
+export function Segmented<T extends string>({ value, options, onChange, labels, colored, size, pendingEmpty }: {
+  value: T; options: readonly T[]; onChange: (v: T) => void; labels?: Partial<Record<T, string>>; colored?: boolean; size?: "sm"; pendingEmpty?: boolean;
 }) {
   return (
     <div className={`seg ${size ?? ""}`} role="radiogroup">
@@ -37,7 +37,7 @@ export function Segmented<T extends string>({ value, options, onChange, labels, 
           type="button"
           role="radio"
           aria-checked={value === o}
-          className={`${value === o ? "on" : ""} ${o === "" ? "blank" : ""} ${colored && isParam(o) ? o.toLowerCase() : ""}`}
+          className={`${value === o ? "on" : ""} ${pendingEmpty && o === "" ? "blank" : ""} ${colored && isParam(o) ? o.toLowerCase() : ""}`}
           onClick={() => onChange(o)}
         >
           {labels?.[o] ?? (o || "なし")}

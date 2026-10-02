@@ -3,6 +3,10 @@
 export const PARAMS = ["Vo", "Da", "Vi"] as const;
 export type Param = (typeof PARAMS)[number];
 
+/** サポートカードのプラン（CSV の plan_type の値 → 表示名） */
+export const PLAN_TYPES = ["sense", "logic", "anomaly", "free"] as const;
+export const PLAN_TYPE_LABEL: Record<string, string> = { sense: "センス", logic: "ロジック", anomaly: "アノマリー", free: "フリー" };
+
 export const PARAM_LABEL: Record<Param, string> = { Vo: "ボーカル", Da: "ダンス", Vi: "ビジュアル" };
 
 export type Phase = "選抜試験" | "本選";
